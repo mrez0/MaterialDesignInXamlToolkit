@@ -8,17 +8,15 @@ namespace MaterialDesignThemes.Wpf
 {
     public static class ListBoxAssist
     {
-        public static readonly DependencyProperty IsToggleProperty = DependencyProperty.RegisterAttached(
-            "IsToggle", typeof(bool), typeof(ListBoxAssist), new FrameworkPropertyMetadata(default(bool)));
-
-        static ListBoxAssist() =>
+        static ListBoxAssist()
+        {
             EventManager.RegisterClassHandler(typeof(ListBox), UIElement.PreviewMouseLeftButtonDownEvent,
                 new MouseButtonEventHandler(ListBoxMouseButtonEvent));
+        }
 
         private static void ListBoxMouseButtonEvent(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
-            var senderElement = (UIElement) sender;
-            int x = 123;
+            var senderElement = (UIElement)sender;
 
             if (!GetIsToggle(senderElement)) return;
 
@@ -42,18 +40,22 @@ namespace MaterialDesignThemes.Wpf
             mouseButtonEventArgs.Handled = true;
 
             if (ripple != null && listBoxItem.IsSelected)
+            {
                 ripple.RaiseEvent(
-                    new MouseButtonEventArgs(mouseButtonEventArgs.MouseDevice, mouseButtonEventArgs.Timestamp,
-                        mouseButtonEventArgs.ChangedButton)
+                    new MouseButtonEventArgs(mouseButtonEventArgs.MouseDevice, mouseButtonEventArgs.Timestamp, mouseButtonEventArgs.ChangedButton)
                     {
                         RoutedEvent = UIElement.PreviewMouseLeftButtonDownEvent, Source = ripple
                     });
+            }
         }
+
+        public static readonly DependencyProperty IsToggleProperty = DependencyProperty.RegisterAttached(
+            "IsToggle", typeof(bool), typeof(ListBoxAssist), new FrameworkPropertyMetadata(default(bool)));
 
         public static void SetIsToggle(DependencyObject element, bool value)
             => element.SetValue(IsToggleProperty, value);
 
         public static bool GetIsToggle(DependencyObject element)
-            => (bool) element.GetValue(IsToggleProperty);
+            => (bool)element.GetValue(IsToggleProperty);
     }
 }
